@@ -2,280 +2,257 @@
 <html lang="am">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Roster - International Ranking System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tadesse Grade Pro V22 - Full Version</title>
     <style>
-        :root { --primary: #1a73e8; --success: #188038; --danger: #d93025; --warning: #f29900; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: #525659; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --dark: #0f172a; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f1f5f9; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        #loginOverlay { position: fixed; inset: 0; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 320px; }
+
+        header { background: white; padding: 10px; border-bottom: 3px solid var(--primary); overflow-x: auto; flex-shrink: 0; }
+        .form-row { display: flex; gap: 6px; align-items: flex-end; min-width: max-content; padding-bottom: 5px; }
+        .field { display: flex; flex-direction: column; }
+        label { font-size: 10px; font-weight: bold; color: #475569; }
+        input, select { padding: 5px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; }
+
+        .actions { background: #e2e8f0; padding: 8px 15px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .btn { padding: 6px 12px; border: none; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .btn-blue { background: var(--primary); } .btn-green { background: var(--success); } .btn-red { background: var(--danger); } .btn-dark { background: #334155; } .btn-gray { background: #64748b; }
+
+        main { flex: 1; overflow: auto; padding: 10px; }
+        table { border-collapse: collapse; width: 100%; font-size: 12px; background: white; border: 1px solid #000; }
+        th { background: var(--dark); color: white; padding: 8px; border: 1px solid #334155; }
+        td { padding: 6px; border: 1px solid #e2e8f0; text-align: center; }
+
+        /* Card System */
+        #cardModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; overflow: auto; padding: 15px; }
+        .card-paper { background: white; width: 100%; max-width: 800px; margin: 0 auto; padding: 25px; border: 2px solid #000; }
+        .card-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; }
+        .card-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .card-table th, .card-table td { border: 1px solid #000; padding: 4px 6px; font-size: 11px; }
         
-        .header-box { background: #fff; padding: 15px; border-bottom: 4px solid var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 100; }
-        .main-form-container { display: flex; gap: 10px; width: 95%; max-width: 1200px; margin: 0 auto; overflow-x: auto; padding-bottom: 5px; align-items: flex-end; }
-        .panel { padding: 10px; border-radius: 8px; border: 1px solid #dee2e6; display: flex; flex-wrap: nowrap; gap: 10px; align-items: flex-end; background: #fff; }
-        .input-group { display: flex; flex-direction: column; flex-shrink: 0; }
-        label { font-size: 11px; font-weight: 600; margin-bottom: 5px; color: #444; }
-        input, select { padding: 8px; border: 1px solid #ced4da; border-radius: 5px; font-size: 13px; }
+        /* Remark Box */
+        .remark-area { margin-top: 10px; }
+        .remark-row { display: grid; grid-template-columns: 120px 1fr; border: 1px solid #000; margin-top: -1px; }
+        .remark-label { background: #f8fafc; border-right: 1px solid #000; padding: 5px; font-size: 10px; font-weight: bold; text-align: center; }
+        .remark-content { padding: 5px; height: 30px; }
 
-        .toolbar { display: flex; gap: 10px; padding: 10px 25px; background: #f1f3f4; border-bottom: 1px solid #ddd; }
-        .main-viewport { flex: 1; overflow: auto; padding: 20px; }
-        .paper { background: white; border-radius: 2px; box-shadow: 0 0 15px rgba(0,0,0,0.5); min-width: min-content; margin: auto; padding: 20px; }
-
-        table { border-collapse: collapse; width: 100%; border: 2px solid #333; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: center; font-size: 13px; white-space: nowrap; }
-        thead th { background: #e8eaed; font-weight: bold; }
-        .annual-row { background-color: #f1f8ff !important; font-weight: bold; }
-
-        .btn { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; color: white; display: flex; align-items: center; gap: 5px; }
-        .btn-blue { background: var(--primary); }
-        .btn-green { background: var(--success); }
-        .btn-red { background: var(--danger); }
-        .btn-orange { background: var(--warning); }
-        
-        #modalOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center; }
-        .card-box { background:white; width: 95%; max-width: 1000px; padding: 30px; max-height: 95vh; overflow-y: auto; border: 1px solid #000; }
-        .card-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-top: 15px; }
-        .card-table { width: 100%; border-collapse: collapse; }
-        .card-table th, .card-table td { border: 1.5px solid #000; padding: 6px; font-size: 12px; }
-        .bg-gray { background-color: #f2f2f2; }
-
-        .comment-section { display: flex; flex-direction: column; gap: 10px; }
-        .professional-comment { border: 1.5px solid #000; display: flex; flex-direction: column; }
-        .comment-header { background: #eee; padding: 5px 10px; border-bottom: 1.5px solid #000; font-weight: bold; font-size: 11px; }
-        .comment-body { flex-grow: 1; padding: 5px 10px; background: repeating-linear-gradient(transparent, transparent 24px, #aaa 24px, #aaa 25px); line-height: 25px; min-height: 55px; }
-
-        .signature-row { display: flex; justify-content: space-between; margin-top: 50px; padding: 0 10px; }
-        .sig-box { text-align: center; width: 30%; font-size: 12px; font-weight: bold; }
-        .sig-line { border-top: 1.5px dashed #000; margin-bottom: 8px; width: 100%; }
-
-        @media print { .no-print { display: none !important; } body { background: white; } .paper { box-shadow: none; } .card-box { border: none; width: 100%; } }
+        @media print { .no-print { display: none !important; } #cardModal { position: static; display: block; background: white; } .card-paper { border: none; } }
     </style>
 </head>
 <body>
 
-<div class="header-box no-print">
-    <div class="main-form-container">
-        <div class="panel">
-            <div class="input-group"><label>School Name</label><input type="text" id="schName" value="ደሊጀንት አካዳሚ" style="width:140px"></div>
-            <div class="input-group"><label>Grade</label><input type="text" id="schGrade" value="8ኛ" style="width:50px"></div>
-            <div class="input-group"><label>System</label>
-                <select id="sysType" onchange="initSetup()">
-                    <option value="semester">Semester</option>
-                    <option value="quarter" selected>Quarter</option>
-                </select>
-            </div>
-            <div class="input-group"><label>Subjects</label><input type="text" id="mSubjects" value="ሒሳብ, አማርኛ, እንግሊዝኛ, ሳይንስ" style="width:160px"></div>
-            <button class="btn btn-blue" onclick="initSetup()">⚙️ Setup</button>
-        </div>
-
-        <div id="entryForm" class="panel" style="display:none; border-left: 5px solid var(--success);">
-            <input type="hidden" id="editId" value="-1">
-            <div class="input-group"><label>No.</label><input type="number" id="sNo" value="1" style="width:45px"></div>
-            <div class="input-group"><label>Name</label><input type="text" id="sName" placeholder="Name..." style="width:130px"></div>
-            <div class="input-group"><label>Sex</label><select id="sSex"><option value="M">M</option><option value="F">F</option></select></div>
-            <div class="input-group"><label>Term</label><select id="sTerm" style="width:110px"></select></div>
-            <div id="dynamicMarks" style="display: flex; gap: 5px;"></div>
-            <div class="input-group"><label>Cond</label><input type="text" id="sCond" maxlength="1" value="A" style="width:35px; text-align:center;"></div>
-            <button id="addBtn" class="btn btn-green" onclick="validateAndAdd()">💾 Save</button>
-        </div>
+<div id="loginOverlay" class="no-print">
+    <div class="login-card">
+        <h3>Grade Manager V22</h3>
+        <input type="password" id="pass" placeholder="Password">
+        <button onclick="login()" class="btn btn-blue" style="width:100%">Login</button>
     </div>
 </div>
 
-<div class="toolbar no-print">
-    <input type="text" id="searchInput" placeholder="🔍 Search Name..." onkeyup="render()" style="width:180px; padding:8px; border-radius:5px; border:1px solid #ccc;">
-    <button class="btn btn-blue" onclick="window.print()">🖨️ Print List</button>
-    <button class="btn btn-red" style="margin-left: auto;" onclick="clearAllData()">🗑️ Clear All</button>
+<header class="no-print">
+    <div class="form-row">
+        <div class="field"><label>School</label><input type="text" id="sch" value="ደሊጀንት አካዳሚ" style="width:110px"></div>
+        <div class="field"><label>Grade</label><input type="text" id="grd" value="8ኛ" style="width:40px"></div>
+        <div class="field"><label>System</label><select id="sys" onchange="init()"><option value="quarter">Quarter</option><option value="semester">Semester</option></select></div>
+        <div class="field"><label>Subjects</label><input type="text" id="subjs" value="Math, Amharic, English, Science" style="width:150px"></div>
+        <button class="btn btn-blue" onclick="init()">⚙️ Setup</button>
+    </div>
+    <div id="entry" class="form-row" style="display:none; margin-top:8px;">
+        <input type="hidden" id="ekey" value="-1">
+        <div class="field"><label>No.</label><input type="number" id="sn" value="1" style="width:35px"></div>
+        <div class="field"><label>Name</label><input type="text" id="nm" style="width:120px"></div>
+        <div class="field"><label>Sex</label><select id="sx"><option>M</option><option>F</option></select></div>
+        <div class="field"><label>Term</label><select id="tm" style="width:80px"></select></div>
+        <div id="marks" style="display:flex; gap:4px"></div>
+        <div class="field"><label>Cond.</label><select id="cn"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <button id="sBtn" class="btn btn-green" onclick="save()">💾 Save</button>
+    </div>
+</header>
+
+<div class="actions no-print">
+    <button class="btn btn-dark" onclick="backupData()">📥 Backup</button>
+    <button class="btn btn-dark" onclick="document.getElementById('fileIn').click()">📤 Restore</button>
+    <input type="file" id="fileIn" style="display:none" onchange="restoreData(event)">
+    <input type="text" id="srch" placeholder="🔍 ስም ፈልግ..." onkeyup="draw()" style="padding:5px; border-radius:4px; border:1px solid #ccc;">
+    <button class="btn btn-gray" onclick="undo()" id="undoBtn" disabled>↩️ Undo</button>
 </div>
 
-<div class="main-viewport">
-    <div class="paper">
-        <table><thead id="tHead"></thead><tbody id="tBody"></tbody></table>
-    </div>
-</div>
+<main>
+    <table id="mainTable">
+        <thead id="thd"></thead>
+        <tbody id="tbd"></tbody>
+    </table>
+</main>
 
-<div id="modalOverlay">
-    <div class="card-box">
-        <div id="cardContent"></div>
-        <div class="no-print" style="text-align:right; margin-top:20px;">
-            <button class="btn btn-blue" onclick="window.print()">🖨️ Print Card</button>
-            <button class="btn btn-red" onclick="document.getElementById('modalOverlay').style.display='none'">Close</button>
-        </div>
+<div id="cardModal">
+    <div class="no-print" style="margin-bottom:10px">
+        <button class="btn btn-red" onclick="closeCard()">ዝጋ</button>
+        <button class="btn btn-green" onclick="window.print()">🖨️ አትም</button>
     </div>
+    <div class="card-paper" id="cardContainer"></div>
 </div>
 
 <script>
-    let students = JSON.parse(localStorage.getItem('finalRosterV21')) || [];
+    function login() { if(document.getElementById('pass').value==="1234") document.getElementById('loginOverlay').style.display='none'; }
+
+    const KEY = 'TADESSE_V22_DB';
+    let data = JSON.parse(localStorage.getItem(KEY)) || [];
+    let lastDeleted = null;
     let subjects = [];
-    let systemType = "quarter";
 
-    function initSetup() {
-        subjects = document.getElementById('mSubjects').value.split(',').map(s => s.trim()).filter(s => s !== "");
-        systemType = document.getElementById('sysType').value;
-        const termSelect = document.getElementById('sTerm');
-        termSelect.innerHTML = "";
-        const max = (systemType === "semester") ? 2 : 4;
-        for(let i=1; i<=max; i++) {
-            let label = systemType === 'semester' ? `${i}ኛ ሴሚስተር` : `${i}ኛ ሩብ ዓመት`;
-            termSelect.innerHTML += `<option value="${i}">${label}</option>`;
-        }
-        document.getElementById('entryForm').style.display = "flex";
-        document.getElementById('dynamicMarks').innerHTML = subjects.map((s, idx) => `
-            <div class="input-group"><label>${s}</label><input type="number" class="mark-input" id="mark_${idx}" data-subject="${s}" style="width:40px"></div>
-        `).join('');
-        render();
+    function init() {
+        subjects = document.getElementById('subjs').value.split(',').map(s=>s.trim()).filter(s=>s);
+        const mode = document.getElementById('sys').value;
+        const ts = document.getElementById('tm');
+        ts.innerHTML = "";
+        const max = mode==='semester' ? 2 : 4;
+        for(let i=1; i<=max; i++) ts.innerHTML += `<option value="${i}">Term ${i}</option>`;
+        document.getElementById('entry').style.display='flex';
+        document.getElementById('marks').innerHTML = subjects.map(s=>`<div class="field"><label>${s}</label><input type="number" class="m-in" data-s="${s}" style="width:32px" min="0" max="100"></div>`).join('');
+        draw();
     }
 
-    // ኢንተርናሽናል የደረጃ ሕግ (1, 2, 2, 4...)
-    function getInternationalRank(list, score) {
-        if (list.length === 0) return "-";
-        // ውጤቶቹን ከትልቅ ወደ ትንሽ መደርደር
-        let sorted = [...list].sort((a, b) => b - a);
-        // የተማሪው ውጤት የሚገኝበትን የመጀመሪያ ኢንዴክስ ማግኘት (+1 ሲደረግ ደረጃው ይሆናል)
-        let rank = sorted.indexOf(score) + 1;
-        return rank + "/" + list.length;
-    }
+    function save() {
+        const name = document.getElementById('nm').value.trim();
+        const term = parseInt(document.getElementById('tm').value);
+        const ekey = document.getElementById('ekey').value;
+        const mode = document.getElementById('sys').value;
+        if(!name) return alert("ስም ያስገቡ!");
 
-    function getAnnualRank(name) {
-        let uniqueNames = [...new Set(students.filter(s => s.mode === systemType).map(s => s.name))];
-        let averages = uniqueNames.map(n => {
-            let userRecs = students.filter(s => s.name === n && s.mode === systemType);
-            return userRecs.reduce((a, b) => a + b.total, 0) / userRecs.length;
-        });
-        
-        let currentUserRecs = students.filter(s => s.name === name && s.mode === systemType);
-        let currentAvg = currentUserRecs.reduce((a, b) => a + b.total, 0) / currentUserRecs.length;
-        
-        return getInternationalRank(averages, currentAvg);
-    }
-
-    function validateAndAdd() {
-        const nameVal = document.getElementById('sName').value.trim();
-        if (!nameVal) return alert("Enter Name!");
-        let marks = {}, total = 0, valid = true;
-        document.querySelectorAll('.mark-input').forEach(i => {
+        let mks = {}, tot = 0;
+        let ins = document.querySelectorAll('.m-in');
+        for(let i of ins) {
             let v = parseFloat(i.value);
-            if(isNaN(v) || v < 0 || v > 100) valid = false;
-            else { marks[i.dataset.subject] = v; total += v; }
-        });
-        if(!valid) return alert("Marks 0-100!");
+            if(isNaN(v) || v < 0 || v > 100) return alert(`${i.dataset.s} ውጤት ከ 0-100 መሆን አለበት!`);
+            mks[i.dataset.s] = v; tot += v;
+        }
 
-        const currentTerm = parseInt(document.getElementById('sTerm').value);
-        const data = {
-            id: document.getElementById('editId').value === "-1" ? Date.now() : parseFloat(document.getElementById('editId').value),
-            sNo: document.getElementById('sNo').value, name: nameVal, sex: document.getElementById('sSex').value,
-            term: currentTerm, conduct: document.getElementById('sCond').value.toUpperCase(),
-            marks, total, avg: total/subjects.length, mode: systemType
+        const obj = { id: ekey==="-1"?Date.now():parseFloat(ekey), no:document.getElementById('sn').value, name, sex:document.getElementById('sx').value, term, marks:mks, total:tot, avg:tot/subjects.length, cond:document.getElementById('cn').value, mode };
+
+        if(ekey==="-1") data.push(obj);
+        else data[data.findIndex(x=>x.id==ekey)] = obj;
+
+        localStorage.setItem(KEY, JSON.stringify(data));
+        draw();
+        
+        ins.forEach(i=>i.value="");
+        const maxT = mode==='semester' ? 2 : 4;
+        if(term < maxT) document.getElementById('tm').value = term + 1;
+        else { document.getElementById('nm').value = ""; document.getElementById('tm').value = 1; document.getElementById('sn').value++; }
+        document.getElementById('ekey').value="-1"; document.getElementById('sBtn').innerText="💾 Save";
+    }
+
+    function del(id) {
+        if(confirm("ይህ መረጃ ይጥፋ?")) {
+            lastDeleted = data.find(x=>x.id==id);
+            data = data.filter(x=>x.id!=id);
+            localStorage.setItem(KEY, JSON.stringify(data));
+            document.getElementById('undoBtn').disabled = false;
+            draw();
+        }
+    }
+
+    function undo() {
+        if(lastDeleted) {
+            data.push(lastDeleted);
+            localStorage.setItem(KEY, JSON.stringify(data));
+            lastDeleted = null;
+            document.getElementById('undoBtn').disabled = true;
+            draw();
+        }
+    }
+
+    function backupData() {
+        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `grade_backup.json`;
+        a.click();
+    }
+
+    function restoreData(event) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            data = JSON.parse(e.target.result);
+            localStorage.setItem(KEY, JSON.stringify(data));
+            draw();
+            alert("ዳታው ተመልሷል!");
         };
-
-        if(document.getElementById('editId').value === "-1") students.push(data);
-        else {
-            students[students.findIndex(s => s.id == data.id)] = data;
-            document.getElementById('editId').value = "-1";
-            document.getElementById('addBtn').innerHTML = "💾 Save";
-        }
-        localStorage.setItem('finalRosterV21', JSON.stringify(students));
-        render();
-        
-        document.querySelectorAll('.mark-input').forEach(i => i.value = "");
-        const maxTerms = (systemType === "semester") ? 2 : 4;
-        if (currentTerm < maxTerms) {
-            document.getElementById('sTerm').value = currentTerm + 1;
-            document.getElementById('mark_0').focus();
-        } else {
-            document.getElementById('sNo').value = parseInt(document.getElementById('sNo').value) + 1;
-            document.getElementById('sName').value = "";
-            document.getElementById('sTerm').value = "1";
-            document.getElementById('sName').focus();
-        }
+        reader.readAsText(event.target.files[0]);
     }
 
-    function render() {
-        const head = document.getElementById('tHead'), body = document.getElementById('tBody');
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        if(subjects.length === 0) return;
-        head.innerHTML = `<tr><th>No.</th><th>Student Name</th><th>Sex</th><th>Term</th>${subjects.map(s => `<th>${s}</th>`).join('')}<th>Total</th><th>Avg</th><th>Rank</th><th class="no-print">Action</th></tr>`;
-        
-        let names = [...new Set(students.map(s => s.name))].filter(n => n.toLowerCase().includes(q));
-        body.innerHTML = "";
-
-        names.forEach(name => {
-            let recs = students.filter(s => s.name === name && s.mode === systemType).sort((a,b) => a.term - b.term);
+    function draw() {
+        const h = document.getElementById('thd'), b = document.getElementById('tbd');
+        const q = document.getElementById('srch').value.toLowerCase();
+        const mode = document.getElementById('sys').value;
+        h.innerHTML = `<tr><th>No.</th><th>Name</th><th>Sex</th><th>Term</th>${subjects.map(s=>`<th>${s}</th>`).join('')}<th>Avg</th><th>Rank</th><th class="no-print">Action</th></tr>`;
+        const names = [...new Set(data.filter(x=>x.mode===mode).map(x=>x.name))].filter(n=>n.toLowerCase().includes(q));
+        b.innerHTML = "";
+        names.forEach(n => {
+            let recs = data.filter(x=>x.name===n && x.mode===mode).sort((a,b)=>a.term-b.term);
             recs.forEach((r, idx) => {
-                let termScores = students.filter(s => s.term == r.term && s.mode == systemType).map(s => s.total);
-                let merge = idx === 0 ? `<td rowspan="${recs.length+1}">${r.sNo}</td><td rowspan="${recs.length+1}" style="text-align:left;">${r.name}</td><td rowspan="${recs.length+1}">${r.sex}</td>` : "";
-                body.innerHTML += `<tr>${merge}<td>${r.term}</td>${subjects.map(s => `<td>${r.marks[s]}</td>`).join('')}<td>${r.total}</td><td>${r.avg.toFixed(1)}</td><td>${getInternationalRank(termScores, r.total)}</td><td class="no-print"><button class="btn-orange" onclick="editS(${r.id})">✏️</button> <button class="btn-red" onclick="deleteS(${r.id})">🗑️</button></td></tr>`;
+                let termScores = data.filter(x=>x.term==r.term && x.mode==mode).map(x=>x.total);
+                let span = idx===0 ? `<td rowspan="${recs.length+1}">${r.no}</td><td rowspan="${recs.length+1}" style="text-align:left; font-weight:bold">${r.name}</td><td rowspan="${recs.length+1}">${r.sex}</td>` : "";
+                b.innerHTML += `<tr>${span}<td>T-${r.term}</td>${subjects.map(s=>`<td>${r.marks[s]}</td>`).join('')}<td>${r.avg.toFixed(1)}</td><td>${getRank(termScores, r.total)}</td><td class="no-print"><button onclick="edit(${r.id})">✏️</button> <button onclick="del(${r.id})" style="color:red">🗑️</button></td></tr>`;
             });
-            let annTot = recs.length > 0 ? recs.reduce((a,b)=>a+b.total,0)/recs.length : 0;
-            body.innerHTML += `<tr class="annual-row"><td>Annual</td>${subjects.map(s => `<td>${recs.length > 0 ? (recs.reduce((sum,r)=>sum+r.marks[s],0)/recs.length).toFixed(1) : 0}</td>`).join('')}<td>${annTot.toFixed(1)}</td><td>${(annTot/subjects.length).toFixed(1)}</td><td style="color:var(--primary)">${getAnnualRank(name)}</td><td class="no-print"><button class="btn btn-blue" onclick="showCard('${name}')">🗂️ Card</button></td></tr>`;
+            let annAvg = recs.reduce((a,b)=>a+b.avg,0)/recs.length;
+            let allAnns = names.map(nm => {
+                let st = data.filter(x=>x.name===nm && x.mode===mode);
+                return st.reduce((a,b)=>a+b.avg,0)/st.length;
+            });
+            b.innerHTML += `<tr style="background:#f1f5f9; font-weight:bold"><td>ANNUAL</td>${subjects.map(s=>`<td>${(recs.reduce((a,b)=>a+b.marks[s],0)/recs.length).toFixed(1)}</td>`).join('')}<td>${annAvg.toFixed(1)}</td><td>${getRank(allAnns, annAvg)}</td><td class="no-print"><button onclick="showCard('${n}')">Card</button></td></tr>`;
         });
     }
 
-    function editS(id) {
-        let s = students.find(x => x.id == id);
-        document.getElementById('sNo').value = s.sNo; document.getElementById('sName').value = s.name;
-        document.getElementById('sSex').value = s.sex; document.getElementById('sTerm').value = s.term;
-        document.getElementById('sCond').value = s.conduct;
-        subjects.forEach((sub, idx) => document.getElementById(`mark_${idx}`).value = s.marks[sub]);
-        document.getElementById('editId').value = s.id; document.getElementById('addBtn').innerHTML = "🔄 Update";
+    function getRank(arr, val) {
+        if(!arr.length) return "-";
+        const sorted = [...new Set(arr)].sort((a,b)=>b-a);
+        return (sorted.indexOf(val)+1) + "/" + arr.length;
     }
 
-    function deleteS(id) { if(confirm("ይጥፋ?")) { students = students.filter(s => s.id !== id); localStorage.setItem('finalRosterV21', JSON.stringify(students)); render(); } }
+    function edit(id) {
+        let r = data.find(x=>x.id==id);
+        document.getElementById('sn').value=r.no; document.getElementById('nm').value=r.name;
+        document.getElementById('sx').value=r.sex; document.getElementById('tm').value=r.term;
+        document.querySelectorAll('.m-in').forEach(i=>i.value=r.marks[i.dataset.s]);
+        document.getElementById('ekey').value=r.id; document.getElementById('sBtn').innerText="🔄 Update";
+    }
 
     function showCard(name) {
-        let recs = students.filter(s => s.name === name && s.mode === systemType).sort((a,b) => a.term - b.term);
-        if(recs.length === 0) return;
-        
-        let termCount = recs.length;
-        let annTotalScore = recs.reduce((a,b)=>a+b.total, 0) / termCount;
-        let annAvg = annTotalScore / subjects.length;
-
-        let commentHtml = "";
-        let maxTerms = (systemType === "semester") ? 2 : 4;
-        for(let i=1; i<=maxTerms; i++) {
-            let label = systemType === "semester" ? `${i}st Semester` : `${i}st Quarter`;
-            if(i==2) label = systemType === "semester" ? `2nd Semester` : `2nd Quarter`;
-            if(i==3) label = `3rd Quarter`; if(i==4) label = `4th Quarter`;
-            commentHtml += `<div class="professional-comment"><div class="comment-header">${label} Comment</div><div class="comment-body"></div></div>`;
-        }
+        const mode = document.getElementById('sys').value;
+        let recs = data.filter(x=>x.name===name && x.mode===mode).sort((a,b)=>a.term-b.term);
+        let annAvg = recs.reduce((a,b)=>a+b.avg,0)/recs.length;
+        let allAnns = [...new Set(data.filter(x=>x.mode===mode).map(x=>x.name))].map(nm => {
+            let st = data.filter(x=>x.name===nm && x.mode===mode);
+            return st.reduce((a,b)=>a+b.avg,0)/st.length;
+        });
 
         let html = `
-            <div style="text-align:center; border-bottom:3px solid #000; padding-bottom:10px; margin-bottom:15px;">
-                <h2 style="margin:0; font-size:22px;">${document.getElementById('schName').value}</h2>
-                <h3 style="margin:5px 0; font-size:16px;">STUDENT PROGRESS REPORT CARD</h3>
+            <div class="card-header"><h2>${document.getElementById('sch').value}</h2><p>Student Report Card</p></div>
+            <div style="display:flex; justify-content:space-between; font-weight:bold; padding:8px 0; border-bottom:1px solid #000; font-size:12px"><span>NAME: ${name}</span><span>SEX: ${recs[0].sex}</span><span>GRADE: ${document.getElementById('grd').value}</span></div>
+            <table class="card-table">
+                <thead><tr><th style="text-align:left">SUBJECTS</th>${recs.map(r=>`<th>T-${r.term}</th>`).join('')}<th>ANNUAL</th></tr></thead>
+                <tbody>
+                    ${subjects.map(s=>`<tr><td style="text-align:left; font-weight:bold">${s}</td>${recs.map(r=>`<td>${r.marks[s]}</td>`).join('')}<td>${(recs.reduce((a,b)=>a+b.marks[s],0)/recs.length).toFixed(1)}</td></tr>`).join('')}
+                    <tr style="background:#eee; font-weight:bold"><td>AVERAGE</td>${recs.map(r=>`<td>${r.avg.toFixed(1)}</td>`).join('')}<td>${annAvg.toFixed(1)}</td></tr>
+                    <tr style="color:blue; font-weight:bold"><td>RANK (ደረጃ)</td>${recs.map(r=>`<td>${getRank(data.filter(x=>x.term==r.term && x.mode==mode).map(x=>x.total), r.total).split('/')[0]}</td>`).join('')}<td>${getRank(allAnns, annAvg).split('/')[0]}</td></tr>
+                    <tr style="font-weight:bold"><td>CONDUCT</td>${recs.map(r=>`<td>${r.cond}</td>`).join('')}<td>-</td></tr>
+                </tbody>
+            </table>
+            <div class="remark-area">
+                ${recs.map(r=>`<div class="remark-row"><div class="remark-label">Term ${r.term} Remark</div><div class="remark-content"></div></div>`).join('')}
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px; font-size:14px; font-weight:bold;">
-                <div>Full Name: <span style="border-bottom:1px solid #000; padding:0 10px;">${name}</span></div>
-                <div>ID No: <span style="border-bottom:1px solid #000; padding:0 10px;">${recs[0].sNo}</span></div>
-                <div>Grade: <span style="border-bottom:1px solid #000; padding:0 10px;">${document.getElementById('schGrade').value}</span></div>
-                <div>Sex: <span style="border-bottom:1px solid #000; padding:0 10px;">${recs[0].sex}</span></div>
-            </div>
-            <div class="card-grid">
-                <table class="card-table">
-                    <thead class="bg-gray">
-                        <tr><th>Subject</th>${recs.map(r => `<th>T-${r.term}</th>`).join('')}<th>Annual</th></tr>
-                    </thead>
-                    <tbody>
-                        ${subjects.map(s => {
-                            let sAnn = recs.reduce((sum,r)=>sum+r.marks[s],0)/termCount;
-                            return `<tr><td style="text-align:left;"><b>${s}</b></td>${recs.map(r => `<td>${r.marks[s]}</td>`).join('')}<td>${sAnn.toFixed(1)}</td></tr>`;
-                        }).join('')}
-                        <tr class="bg-gray"><td><b>Total Score</b></td>${recs.map(r => `<td>${r.total.toFixed(1)}</td>`).join('')}<td>${annTotalScore.toFixed(1)}</td></tr>
-                        <tr><td><b>Average</b></td>${recs.map(r => `<td>${r.avg.toFixed(1)}</td>`).join('')}<td>${annAvg.toFixed(1)}</td></tr>
-                        <tr class="bg-gray"><td><b>Rank</b></td>${recs.map(r => `<td>${getInternationalRank(students.filter(s => s.term == r.term && s.mode == systemType).map(s => s.total), r.total)}</td>`).join('')}<td>${getAnnualRank(name)}</td></tr>
-                        <tr><td><b>Conduct</b></td>${recs.map(r => `<td>${r.conduct}</td>`).join('')}<td>${recs[termCount-1].conduct}</td></tr>
-                    </tbody>
-                </table>
-                <div class="comment-section">${commentHtml}</div>
-            </div>
-            <div class="signature-row">
-                <div class="sig-box"><div class="sig-line"></div>Home-Room Teacher</div>
-                <div class="sig-box"><div class="sig-line"></div>Parent's Signature</div>
-                <div class="sig-box"><div class="sig-line"></div>School Principal</div>
-            </div>`;
-        document.getElementById('cardContent').innerHTML = html;
-        document.getElementById('modalOverlay').style.display = "flex";
+            <div style="margin-top:30px; display:flex; justify-content:space-between; font-weight:bold"><div style="border-top:1.5px solid #000; width:160px; text-align:center; padding-top:5px">Teacher Signature</div><div style="border-top:1.5px solid #000; width:160px; text-align:center; padding-top:5px">Director Signature</div></div>`;
+        document.getElementById('cardContainer').innerHTML = html;
+        document.getElementById('cardModal').style.display='block';
     }
 
-    function clearAllData() { if(confirm("Clear all?")) { students=[]; localStorage.clear(); render(); } }
-    window.onload = initSetup;
+    function closeCard() { document.getElementById('cardModal').style.display='none'; }
+    window.onload = init;
 </script>
 </body>
 </html>
