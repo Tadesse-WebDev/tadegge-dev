@@ -10,7 +10,7 @@
 - **Tools:** GitHub, VS Code (Acode), SoloLearn, FreeCodeCamp
 
 ### 📁 ዋና ዋና ፕሮጀክቶቼ
-- **[Student Roster System]([https://github.com/Tadesse-WebDev/student-matrix](https://tadesse-webdev.github.io/tadegge-dev/)):** የተማሪዎችን መረጃ የሚያስተዳድር የ Python ፕሮጀክት።
+- **[Student Roster System](https://tadesse-webdev.github.io/tadegge-dev/)[የተማሪዎችን መረጃ የሚያስተዳድር የ Python ፕሮጀክት።
 - **[Personal Portfolio](https://tadesse-webdev.github.io/tadegge-dev/):** የእኔን ስራዎች የሚያሳይ ድረ-ገጽ።
 
 ---
